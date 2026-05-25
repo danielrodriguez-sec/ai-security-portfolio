@@ -129,9 +129,9 @@ AI incident response includes everything traditional IR covers — the AI system
 - **Hallucination-driven downstream harm** (the system worked exactly as designed and still caused damage)
 - **AI supply chain compromise** (model artifacts, datasets, ML frameworks, agent tools)
 
-The operational tell that distinguishes an AI incident from a conventional one is that the *first* signal is usually framed as **"unexpected or abnormal model behavior"** rather than as obvious malicious activity. Triage starts with treating that signal as a security event rather than an ML quality issue — and that's the analyst judgment call AI SOC roles are hiring for.
+The operational tell that distinguishes an AI incident from a conventional one is that the first signal is usually framed as "unexpected or abnormal model behavior" rather than as obvious malicious activity. Triage starts with treating that signal as a security event rather than an ML quality issue.
 
 ---
 
-*Daniel Rodriguez — `ai-security-portfolio`*
-*Cross-references: `splunk-detection-pack/`, `ai-ir-playbook/`*
+*Author: Daniel Rodriguez*
+*Related artifacts in this portfolio: [Splunk Detection Pack](splunk-detection-pack/) · [AI IR Playbook](ai-ir-playbook/)*
