@@ -131,7 +131,6 @@ AI incident response includes everything traditional IR covers — the AI system
 
 The operational tell that distinguishes an AI incident from a conventional one is that the first signal is usually framed as "unexpected or abnormal model behavior" rather than as obvious malicious activity. Triage starts with treating that signal as a security event rather than an ML quality issue.
 
----
-
 *Author: Daniel Rodriguez*
+
 *Related artifacts in this portfolio: [Splunk Detection Pack](splunk-detection-pack/) · [AI IR Playbook](ai-ir-playbook/)*
