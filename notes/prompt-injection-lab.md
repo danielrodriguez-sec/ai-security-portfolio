@@ -18,7 +18,7 @@ Hand-crafted prompt injection experiments against locally-hosted open-weights mo
 ## Reference
 
 See [`../frameworks-cross-reference.md`](../frameworks-cross-reference.md) for the OWASP / MITRE ATLAS / NIST AI RMF mapping these techniques map to.
-
+See [`./prompt-injection-defenses.md`](./prompt-injection-defenses.md) for the defensive companion — controls that stop each attack documented here, mapped to OWASP / ATLAS / NIST.
 ---
 
 ## Entries
