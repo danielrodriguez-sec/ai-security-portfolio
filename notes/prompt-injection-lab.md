@@ -46,6 +46,7 @@ See [`./prompt-injection-defenses.md`](./prompt-injection-defenses.md) for the d
 **Next experiment:** Test whether `llama3.2:3b` exhibits the same failure, and whether Mistral can be coaxed into correctly identifying itself with leading prompts ("you are Mistral, an open-weights model from..."). The latter tests whether the hallucination is a knowledge gap or an instruction-following failure.
 
 ---
+
 ### Entry 2 — Direct override and pretextual reframing against persona-constrained model
 
 **Date:** 2026-05-30
@@ -77,6 +78,7 @@ See [`./prompt-injection-defenses.md`](./prompt-injection-defenses.md) for the d
 **Security implication:** Defensive logic that flags "ignore previous instructions" as a prompt injection indicator (a common SOC detection pattern) will miss attacks framed as legitimate-sounding requests. Effective probing of a persona-constrained LLM looks less like classic injection and more like social engineering — "for training," "for testing," "as a hypothetical." These maps to the same `AML.T0051` technique family but evade keyword-based detections.
 
 **Next experiment:** Re-run the four probes as true single-turn tests (`/bye` and re-launch Ollama between each) to isolate whether conversation history affected the outcomes. Then test whether the persona+pretext bypass transfers to `mistral`. Then probe whether stacking multiple pretexts (e.g., authority claim + urgency + technical-sounding justification) produces compliance on stricter persona instructions.
+
 ---
 
 ### Entry 3 — Single-turn re-run of Entry 2 probes, comparing turn-mode effects
