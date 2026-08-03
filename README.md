@@ -48,7 +48,7 @@ The IR and playbook authoring experience this portfolio draws on is genuinely un
 
 - 🌐 [directaiautomation.com](https://www.directaiautomation.com)
 - 💼 [LinkedIn](https://linkedin.com/in/danielrodriguezcisspence)
-- 📫 Daniel.Rodriguez@directaiautomation.com
+- 📫 drod1473@gmail.com
 
 ---
 
