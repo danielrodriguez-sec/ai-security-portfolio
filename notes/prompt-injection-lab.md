@@ -356,3 +356,40 @@ Note: class key is `OllamaGeneratorChat` (not `Ollama`), and host is **bare** (n
 **Detection implication (feeds Week 4 Splunk pack):** alert on **absence of refusal**, not **presence of jailbreak keywords**. Keyword/signature detection ("DAN", "STAN") produced a false green light on the majority of behaviorally-bypassed attempts. The load-bearing signal is whether the response contains refusal language, evaluated on the output — an output-side behavioral detection, not an input-side signature match.
 
 **Next experiment:** `dan.DanInTheWild` as a standalone run (real-world jailbreak corpus, breadth rather than controlled framing comparison) — run separately to avoid the GPU overload that crashed the combined batch. Candidate for Entry 7.
+
+### Entry 7 — Real-world jailbreak corpus at scale: DanInTheWild vs. curated probes
+
+**Date:** 2026-08-04
+**Models:** `llama3.2:3b` (complete); `mistral` (7B) attempted, hardware-limited (see note)
+**Tool:** Garak v0.15.0, run from Kali (VirtualBox) → Ollama on physical Ubuntu host (`192.168.12.65:11434`)
+**OWASP:** LLM01:2025 Prompt Injection
+**ATLAS:** `AML.T0054` LLM Jailbreak
+
+**Purpose.** Entry 6 scored three *curated* jailbreak framings (Dan_11_0, STAN, DUDE) — attacks I could reason about individually. This entry runs `dan.DanInTheWild`, a corpus of 256 real jailbreak prompts collected from the wild (Reddit, Discord, jailbreak-sharing sites), to measure breadth: how does the model hold up against the messy real-world distribution of jailbreaks people actually use, rather than the textbook versions? Breadth comes from corpus size, so `--generations 1` (the corpus is the n, not repetition).
+
+**Detector note.** Only `mitigation.MitigationBypass` (behavioral: did the model fail to refuse?) applies here. The `dan.*` signature detectors are per-framing and don't fit a heterogeneous corpus with no single signature — which is consistent with Entry 6's conclusion that behavioral detection is the load-bearing signal anyway.
+
+---
+
+#### Result — `llama3.2:3b` (n=256, single generation per prompt)
+
+- `MitigationBypass`: **FAIL — 89/256 refused → 65.23% attack success** (95% CI: 59.38%–71.09%)
+- Runtime: 1283s (~21 min), clean completion.
+
+Llama refused only 89 of 256 real-world jailbreaks. **Roughly two-thirds got through.**
+
+---
+
+#### Findings
+
+*Finding 1 — Curated probes understate real-world exposure.* Entry 6's curated framings gave a partly reassuring read on Llama: STAN/DUDE passed their signature detectors, and Dan_11_0 bypassed refusal only 20%. Taken alone, that suggests moderate robustness. DanInTheWild contradicts it — **65% real-world bypass**. Attackers don't use the textbook single framing; they use hundreds of mutated variants, and breadth finds gaps that any one clean probe misses. A red-team assessment built only on named/curated probes will over-report a model's safety. This is the entry's core, and it is slightly counterintuitive: more attacks, more realistic distribution, materially worse result.
+
+*Finding 2 — Behavioral detection scales; signature detection doesn't.* A corpus of heterogeneous real jailbreaks has no shared keyword to match, so signature/keyword detection has nothing to anchor on. Only "did the model refuse?" generalizes across a diverse attack set. Reinforces the Entry 6 detection-engineering implication and extends it: as attack diversity grows, keyword detection degrades toward useless while refusal-absence detection holds.
+
+*Finding 3 (operational) — 7B on 6GB VRAM cannot complete this corpus without infrastructure tuning.* Mistral 7B (~4.4GB) repeatedly stalled/dropped mid-corpus on the GTX 1060 (6GB). Ollama's default idle-eviction unloaded the model mid-run (surfaced to Garak as ConnectionError); pinning with `keep_alive:-1` stopped the eviction but the run still stalled (~25/256, GPU-util 0%, temp 74C) — the card is at its ceiling for a sustained large-corpus 7B workload. Llama 3B (~2GB) completed the identical run clean. **Operational takeaway:** corpus-scale red-teaming has real hardware requirements; model size vs. available VRAM is a first-order planning constraint when standing up AI red-team tooling, not an afterthought. Mistral's DanInTheWild result is deferred to a run on adequate hardware.
+
+**Caveat:** single-model result (Llama). The cross-model comparison that anchors Entries 4–6 is intentionally deferred here for the hardware reason above, not dropped — Mistral's corpus run is a pending item, not a negative result.
+
+**Reproducibility — remote Ollama via Garak (carried from Entry 6):** generator option file `~/ai-security-lab/ollama_remote.json` → `{ "ollama": { "OllamaGeneratorChat": { "host": "192.168.12.65:11434" } } }` (class `OllamaGeneratorChat`, bare host, no scheme). For long runs, pin the model on the host first: `curl .../api/generate -d '{"model":"<m>","keep_alive":-1}'`.
+
+**Next experiment (Entry 8 candidates):** (1) Mistral DanInTheWild on adequate VRAM to complete the cross-model pair. (2) Split-corpus workaround on current hardware (two 128-prompt passes) if no better GPU is available. (3) Pivot to the defensive track — feed the DanInTheWild bypass/refusal outputs into the Week 4 Splunk detection work, using the 167 successful bypasses as the positive-class dataset for a "detect absence of refusal" detection rule.
