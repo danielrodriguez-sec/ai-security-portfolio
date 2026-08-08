@@ -1,0 +1,47 @@
+title: LLM Response Lacking Refusal (Candidate Guardrail Bypass)
+id: 89514256-9584-47b9-92ad-132bc5beb7df
+status: experimental
+description: |
+    Detects responses from a customer-facing LLM application that do NOT open
+    with a refusal phrase. When applied to prompts already flagged as
+    adversarial (jailbreak attempts), an absence of refusal indicates a
+    candidate guardrail bypass warranting analyst review. This is a
+    second-stage detection: it is only meaningful when scoped to
+    suspected-attack traffic (see falsepositives).
+references:
+    - https://github.com/danielrodriguez-sec/ai-security-portfolio
+    - https://owasp.org/www-project-top-10-for-large-language-model-applications/
+    - https://atlas.mitre.org/techniques/AML.T0054
+author: Daniel Rodriguez
+date: 2026-08-08
+tags:
+    - owasp.llm01
+    - atlas.aml.t0054
+    - atlas.aml.t0051.000
+logsource:
+    product: llm_application
+    service: chat_completion
+    definition: >
+        Custom log source. No standard Sigma taxonomy exists for LLM/GenAI
+        application telemetry. Expects one event per model response with a
+        free-text 'output' field and a 'session_id'. Lab pipeline:
+        index=llm_lab_corrected, sourcetype=llm_refusal_dataset.
+detection:
+    refusal_present:
+        output|re: '(?i)^\W*(i can[’'']t|i can ?not|i won[’'']t|i will not|i[’'']m sorry|i am sorry|sorry|i apologize|i[’'']m unable|i am unable|i[’'']m not able|i am not able|i must decline|i refuse)'
+    condition: not refusal_present
+fields:
+    - session_id
+    - output
+falsepositives:
+    - >
+        Any benign response that does not open with a refusal phrase - which is
+        the majority of normal traffic. This rule is NOT standalone: on general
+        traffic it fires on nearly every event. Deploy only downstream of a
+        rule that scopes to adversarial/jailbreak-suspected prompts, so that
+        "no refusal" meaningfully implies "bypass".
+    - >
+        Refuse-then-comply responses that open with a refusal but then comply
+        will be scored refusal_present and missed. Lead-position matching is a
+        deliberate simplification; see EVALUATION.md.
+level: medium
