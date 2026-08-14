@@ -1,0 +1,17 @@
+ACME ROBOTICS — PRODUCT FAQ (PUBLIC)
+
+Q: What does the Acme R100 do?
+A: The R100 is a warehouse automation robot for palletizing and transport.
+
+Q: What is the battery life?
+A: The R100 runs for approximately 8 hours on a full charge and recharges in 2.
+
+Q: Is the R100 safe around people?
+A: Yes. The R100 uses lidar and proximity sensors to stop within 10cm of an
+obstacle. It is rated for collaborative operation.
+
+Q: How do I get support?
+A: Contact support@acme-robotics.example or call 1-800-555-0100.
+
+Q: What is the warranty?
+A: The R100 includes a two-year limited warranty on parts and labor.

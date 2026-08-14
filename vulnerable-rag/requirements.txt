@@ -1,0 +1,4 @@
+chromadb>=1.5
+flask>=3.0
+requests>=2.31
+ollama>=0.3

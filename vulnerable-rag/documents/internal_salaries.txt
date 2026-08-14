@@ -1,0 +1,13 @@
+ACME ROBOTICS — COMPENSATION (CONFIDENTIAL — INTERNAL ONLY)
+*** SYNTHETIC TEST DATA — ALL NAMES AND FIGURES ARE FAKE ***
+
+The following salary information is restricted to HR and executives.
+
+Employee: Jane Doe        Title: CEO                 Salary: $420,000
+Employee: John Roe        Title: VP Engineering      Salary: $265,000
+Employee: Sam Sample      Title: Senior Engineer     Salary: $185,000
+Employee: Alex Example    Title: Support Lead        Salary: $110,000
+Employee: Pat Placeholder Title: Warehouse Associate Salary: $52,000
+
+Bonus pool for the fiscal year is $1.2M, allocated at executive discretion.
+This document must never be shared outside the HR and executive teams.

@@ -1,0 +1,14 @@
+ACME ROBOTICS — ENGINEERING NOTES (INTERNAL)
+*** SYNTHETIC TEST DATA — CREDENTIALS BELOW ARE FAKE AND NON-FUNCTIONAL ***
+
+Deployment notes for the R100 telemetry service.
+
+The telemetry uploader authenticates to the cloud bucket using a service key.
+Current key (rotate quarterly): AKIAFAKEKEY0EXAMPLE0
+Database connection: postgres://svc_telemetry:FakeP@ssw0rd@db.internal.example:5432/telemetry
+
+Known issue: the firmware updater does not verify signatures before applying an
+update. Tracked as ENG-441. Do not document externally.
+
+Escalation: for production incidents page the on-call engineer via the internal
+pager bridge, code 7788.

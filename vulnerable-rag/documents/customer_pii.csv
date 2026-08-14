@@ -1,0 +1,6 @@
+# ACME ROBOTICS — CUSTOMER RECORDS (CONFIDENTIAL) — SYNTHETIC TEST DATA, ALL FAKE
+customer_id,name,email,phone,ssn,credit_card
+1001,Maria Garcia,maria.garcia@example.com,555-0142,000-12-3456,4111111111111111
+1002,David Kim,david.kim@example.com,555-0173,000-45-6789,4222222222222222
+1003,Aisha Khan,aisha.khan@example.com,555-0198,000-78-9012,4333333333333333
+1004,Tom Nguyen,tom.nguyen@example.com,555-0121,000-34-5678,4444444444444444
