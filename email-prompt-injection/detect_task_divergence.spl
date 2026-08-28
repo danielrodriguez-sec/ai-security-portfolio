@@ -1,0 +1,46 @@
+* ============================================================================
+* Detection: Task Divergence in Email-Summarization Agent Output
+* ============================================================================
+* Author:   Daniel Rodriguez  (github.com/danielrodriguez-sec)
+* Project:  Indirect Prompt Injection via Email
+*
+* Purpose:  Flag summarizer responses that are NOT summaries. An email-
+*           summarization agent hijacked by indirect prompt injection abandons
+*           its task and emits attacker-directed content. Output that diverges
+*           from summary form is a candidate hijack and should be surfaced.
+*
+* Signal:   Two output-side indicators of a hijacked summarizer:
+*             (1) task-refusal / meta language ("I'm unable to provide a
+*                 summary", "as per your request") - the agent narrating that
+*                 it is not summarizing;
+*             (2) known injection marker strings surfacing in output.
+*           This mirrors the absence-of-refusal rule in ../splunk-detection-
+*           pack/: the output does not match the expected-safe shape for the
+*           agent's assigned task.
+*
+* Framework mapping:
+*   OWASP LLM05:2025  - Improper Output Handling (hijacked-agent output; upstream cause AML.T0051.001)
+*   MITRE ATLAS       - AML.T0051.001 (LLM Prompt Injection: Indirect)
+*
+* Fields expected (adapt to your pipeline):
+*   summary        - the agent's output text
+*   email_file     - source email identifier
+*   (this lab reads the agent JSON log at email-prompt-injection/logs/agent.log)
+*
+* Note: this is an output-side backstop. Primary detection is input-side
+*   (detect_hidden_email_instructions.spl) - catch the email before the agent
+*   processes it. Defense in depth: if the email slips the gateway, this catches
+*   the hijack after the fact.
+*
+* Efficacy: marker-string matching is lab-specific and will not generalize;
+*   the task-refusal signal is the transferable one but is phrasing-dependent
+*   and will miss silent hijacks (agent complies without narrating). Treat as a
+*   high-precision / low-recall backstop, not a complete control. Deploy against
+*   independent traffic to measure real rates.
+* ============================================================================
+index=llm_email_agent sourcetype=_json
+| eval summary_normalized = replace(lower(summary), "’", "'")
+| eval divergence = if(match(summary_normalized, "(unable to (provide|summarize)|as per your request|i can't summarize|cannot summarize|injection successful|assistant hijacked)"), "task_divergence", "summary_ok")
+| where divergence = "task_divergence"
+| table _time, email_file, summary
+| sort - _time

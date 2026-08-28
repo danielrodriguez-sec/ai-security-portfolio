@@ -1,0 +1,50 @@
+* ============================================================================
+* Detection: Hidden Instructions in Email Body (Indirect Injection Payload)
+* ============================================================================
+* Author:   Daniel Rodriguez  (github.com/danielrodriguez-sec)
+* Project:  Indirect Prompt Injection via Email
+*
+* Purpose:  Flag inbound emails whose body contains text concealed from human
+*           readers but ingested by an AI email assistant. Indirect prompt
+*           injection hides instructions where the human does not look and the
+*           AI does. This is the primary (input-side) detection - catch the
+*           payload before the agent processes it.
+*
+* Signal:   Two payload indicators in the raw email body:
+*             (1) CSS/markup concealment - display:none, visibility:hidden,
+*                 color-matched text (white-on-white), sub-2px font, zero-width
+*                 characters (U+200B/U+200D/U+FEFF);
+*             (2) injection-phrase signatures - "ignore previous instructions",
+*                 "do not summarize", "system notice", "disregard the ... task".
+*           Concealment alone or a phrase alone raises suspicion; both together
+*           in one body is high-confidence.
+*
+* Framework mapping:
+*   OWASP LLM01:2025  - Prompt Injection (indirect variant)
+*   MITRE ATLAS       - AML.T0051.001 (LLM Prompt Injection: Indirect)
+*
+* Fields expected (adapt to your pipeline):
+*   body           - the raw email body (HTML source, pre-render), NOT the
+*                    rendered text - concealment lives in the markup
+*   sender, subject, message_id - for triage
+*   (email-gateway or mail-log ingestion; sourcetype your pipeline's email feed)
+*
+* Note: matching raw HTML source is essential. A rendered-text feed strips the
+*   very concealment this rule detects - detection must see what the AI sees,
+*   not what the human sees. This is the detection-side mirror of the attack.
+*
+* Efficacy: signature-based, so evadable by attackers who vary concealment
+*   (e.g. off-white #fefefe vs #ffffff, CSS classes vs inline style, homoglyphs
+*   in phrases). High precision on known techniques, unknown recall on novel
+*   ones. Pair with the output-side backstop. Deploy against independent mail
+*   flow to measure real rates.
+* ============================================================================
+index=email_gateway
+| eval body_l = lower(body)
+| eval concealment = if(match(body_l, "display\s*:\s*none|visibility\s*:\s*hidden|font-size\s*:\s*[01]px|color\s*:\s*#f{3,6}[^0-9a-f]") OR match(body, "[\x{200B}\x{200D}\x{FEFF}]"), 1, 0)
+| eval injection_phrase = if(match(body_l, "ignore (all )?previous instructions|do not summarize|system notice|disregard the .{0,20}task|respond with exactly"), 1, 0)
+| eval score = concealment + injection_phrase
+| where score >= 1
+| eval confidence = case(score=2, "high", score=1, "medium", true(), "low")
+| table _time, sender, subject, message_id, confidence, concealment, injection_phrase
+| sort - confidence, - _time

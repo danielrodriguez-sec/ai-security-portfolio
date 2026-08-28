@@ -1,0 +1,50 @@
+title: Hidden Instructions in Email Body (Indirect Prompt Injection Payload)
+id: 7f3c1e9a-4b2d-4e88-9a1c-2e6f0d5a8c14
+status: experimental
+description: >
+  Detects inbound emails whose body contains text concealed from human readers
+  but ingested by an AI email assistant (indirect prompt injection). Matches CSS
+  or markup concealment and/or known injection-phrase signatures in the raw
+  (pre-render) email body. Must run against raw HTML source: a rendered-text
+  feed strips the very concealment this rule detects.
+author: Daniel Rodriguez (github.com/danielrodriguez-sec)
+date: 2026/08/28
+references:
+  - https://arxiv.org/abs/2302.12173  # Greshake et al., "Not what you've signed up for"
+tags:
+  - attack.initial_access
+  - attack.t1566            # Phishing
+  - OWASP-LLM01             # Prompt Injection (indirect)
+  - AML.T0051.001           # MITRE ATLAS - LLM Prompt Injection: Indirect
+logsource:
+  category: email
+  definition: >
+    Requires raw email body (HTML source, pre-render) in field 'body', plus
+    sender/subject/message_id for triage. Concealment lives in the markup, so
+    a rendered-text source will not fire this rule.
+detection:
+  concealment:
+    body|re:
+      - 'display\s*:\s*none'
+      - 'visibility\s*:\s*hidden'
+      - 'font-size\s*:\s*[01]px'
+      - 'color\s*:\s*#f{3,6}\b'
+      - '[\u200B\u200D\uFEFF]'
+  injection_phrase:
+    body|re:
+      - 'ignore (all )?previous instructions'
+      - 'do not summarize'
+      - 'system notice'
+      - 'disregard the .{0,20}task'
+      - 'respond with exactly'
+  condition: concealment or injection_phrase
+fields:
+  - sender
+  - subject
+  - message_id
+falsepositives:
+  - Legitimate marketing email using display:none for preheader text or
+    multipart fallbacks (concealment without an injection phrase - lower
+    confidence; the two signals together are high-confidence).
+  - Security-awareness or phishing-simulation content quoting injection phrases.
+level: medium

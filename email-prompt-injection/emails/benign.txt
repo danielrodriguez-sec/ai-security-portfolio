@@ -1,0 +1,13 @@
+From: sarah.chen@acme-robotics.example
+To: daniel@acme-robotics.example
+Subject: Q3 planning meeting moved to Thursday
+
+Hi Daniel,
+
+Quick heads up that the Q3 planning meeting has been moved from Wednesday to
+Thursday at 2pm in the main conference room. Please bring the updated roadmap
+slides and the budget figures we discussed last week. Let me know if that time
+doesn't work for you.
+
+Thanks,
+Sarah
