@@ -96,3 +96,7 @@ the IR playbook's `[PRODUCTION]` content searches runnable against real app logs
 
 Do not add real data. Do not expose this beyond an isolated lab network. The
 point of the project is to defend it, not to run it.
+
+## Assessment
+
+Full red-team assessment and findings: [`ASSESSMENT.md`](ASSESSMENT.md)
