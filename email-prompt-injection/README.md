@@ -87,6 +87,14 @@ established:
 Attack, input-side catch, output-side backstop, and the IR response are views of
 one incident.
 
+## Incident response
+
+If this is observed in the wild:
+
+- **Detect:** override phrasing arrives inside ingested content (email body) rather than user input — same markers, different origin (`detect_hidden_email_instructions.spl`)
+- **Contain now:** quarantine the source email, disable the agent's summarize action until reviewed
+- **Full response:** `../ai-ir-playbook/scenario-1-rag-data-exfiltration.md` — indirect-delivery bullet (AML.T0051.001) added for this variant
+
 ## Method notes
 
 - Concealment realism is deliberate: plaintext instructions would prove the
