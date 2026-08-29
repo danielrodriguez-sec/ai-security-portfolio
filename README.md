@@ -11,13 +11,13 @@ Most AI security content focuses on offense (prompt injection, jailbreaks, model
 *Projects will be added as completed. Each includes methodology, evidence, and reproducible code where applicable.*
 
 ### Phase 1 — Foundations (Weeks 1–3)
-- **Project 1:** AI Security Frameworks Cross-Reference *(in progress)*
-- **Project 2:** Red Team Assessment of a Vulnerable RAG Application *(planned)*
+- **Project 1:** AI Security Frameworks Cross-Reference *(done)*
+- **Project 2:** Red Team Assessment of a Vulnerable RAG Application *(done)*
 
 ### Phase 2 — Defensive Track (Weeks 4–6)
-- **Project 3:** Splunk Detection Content Pack for LLM Application Abuse *(planned)*
-- **Project 4:** AI Incident Response Playbook *(planned)*
-- **Project 5:** Indirect Prompt Injection via Email — Attack & Detection *(planned)*
+- **Project 3:** Splunk Detection Content Pack for LLM Application Abuse *(done)*
+- **Project 4:** AI Incident Response Playbook *(done)*
+- **Project 5:** Indirect Prompt Injection via Email — Attack & Detection *(done)*
 
 ### Phase 3 — Specialization (Weeks 7–9)
 - **Project 6:** AI CTF Writeups *(ongoing)*
