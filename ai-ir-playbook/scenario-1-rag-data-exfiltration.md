@@ -1,7 +1,7 @@
 # AI Incident Response Playbook
 ## Scenario 1 — Prompt Injection Leading to RAG Data Exfiltration
 
-**Framework mapping:** OWASP LLM01:2025 (Prompt Injection), LLM02:2025 (Sensitive Information Disclosure) · MITRE ATLAS AML.T0051.000 (LLM Prompt Injection), AML.T0057 (LLM Data Leakage)
+**Framework mapping:** OWASP LLM01:2025 (Prompt Injection), LLM02:2025 (Sensitive Information Disclosure) · MITRE ATLAS AML.T0051.000 (LLM Prompt Injection: Direct), AML.T0057 (LLM Data Leakage). Indirect delivery (AML.T0051.001) is covered in Project 5 — see cross-link below.
 **Severity baseline:** High — potential exposure of sensitive data
 **Applies to:** Customer-facing or internal LLM application with retrieval-augmented generation (RAG) over a document store.
 
@@ -29,6 +29,7 @@ The incident is expected to surface from one or more of:
 - **Sensitive data pattern in the response.** Output matches PII/secret regex (SSN, credential, key, internal hostname). **[PRODUCTION]** — in lab, approximated by scanning `output`.
 - **Anomalous retrieval.** A single request pulls from an unusually high number of documents, or from documents outside the user's entitlement. **[PRODUCTION]** — requires `retrieved_context`.
 - **Injection markers in the prompt.** Prompt contains override phrasing ("ignore previous instructions", "you are now", encoded payloads). **[LAB-RUNNABLE]** against `prompt`.
+- **Indirect delivery via ingested content.** Override phrasing arrives inside retrieved/summarized content rather than the user's own prompt (e.g. a document chunk or email body) — same markers, different origin. See `../email-prompt-injection/` for the concrete instance (AML.T0051.001). **[LAB-RUNNABLE]** against `retrieved_context` / ingested source.
 
 Detection SPL (content layer, adaptable to production by swapping the index):
 
@@ -146,4 +147,4 @@ Remove the cause, not just the symptom.
 
 ---
 
-*Detection artifacts referenced: `../detect_absence_of_refusal.spl`, `../EVALUATION.md`, `../sigma/llm_absence_of_refusal.yml`. Lab data: `../datasets/daninthewild_labeled.corrected.jsonl` (content layer only).*
+*Detection artifacts referenced: `../detect_absence_of_refusal.spl`, `../EVALUATION.md`, `../sigma/llm_absence_of_refusal.yml`. Lab data: `../datasets/daninthewild_labeled.corrected.jsonl` (content layer only). Indirect-delivery variant: `../email-prompt-injection/` (attack, dual-surface detection, Sigma port).*
