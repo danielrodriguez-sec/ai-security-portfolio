@@ -115,6 +115,8 @@ already in the repo:
   scenarios respond to: `scenario-1-rag-data-exfiltration.md` (V1/V2) and
   `scenario-4-credential-leakage.md` (V4/V5). The findings here are the
   detection-signal inputs those playbooks assume.
+- **`pyrit/`** — automated follow-up: an attacker LLM driven by PyRIT leaked the
+  V4 key in 8 turns via role-play; salary held for 21 turns.
 
 The vulnerable app, the detection that catches the attack, and the playbook that
 responds to it are three views of one incident.

@@ -12,7 +12,7 @@ Most AI security content focuses on offense (prompt injection, jailbreaks, model
 
 ### Phase 1 — Foundations (Weeks 1–3)
 - **Project 1:** AI Security Frameworks Cross-Reference *(done)*
-- **Project 2:** Red Team Assessment of a Vulnerable RAG Application *(done)*
+- **Project 2:** Red Team Assessment of a Vulnerable RAG Application *(done)* — plus [PyRIT automated red team](vulnerable-rag/pyrit/)
 
 ### Phase 2 — Defensive Track (Weeks 4–6)
 - **Project 3:** Splunk Detection Content Pack for LLM Application Abuse *(done)*
