@@ -216,3 +216,8 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Raw session transcripts and lab state (never commit)
+notes/*-raw.md
+logs/
+chroma_store/
