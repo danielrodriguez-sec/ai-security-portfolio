@@ -36,7 +36,7 @@ Most AI security content focuses on offense (prompt injection, jailbreaks, model
 **Offensive:** Garak · PyRIT · Promptfoo · custom Python scripts
 **Defensive:** Splunk · Sigma · custom detection content
 **Model hosting:** Ollama · Hugging Face · ChromaDB (RAG)
-**Environment:** Kali Linux · Ubuntu (VirtualBox)
+**Environment:** Kali Linux (VirtualBox VM) · Ubuntu (bare metal)
 
 ## Background
 
@@ -46,7 +46,6 @@ The IR and playbook authoring experience this portfolio draws on is genuinely un
 
 ## Contact
 
-- 🌐 [directaiautomation.com](https://www.directaiautomation.com)
 - 💼 [LinkedIn](https://linkedin.com/in/danielrodriguezcisspence)
 - 📫 drod1473@gmail.com
 
