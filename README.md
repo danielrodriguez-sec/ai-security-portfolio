@@ -20,7 +20,6 @@ Most AI security content focuses on offense (prompt injection, jailbreaks, model
 - **Project 5:** Indirect Prompt Injection via Email — Attack & Detection *(done)*
 
 ### Phase 3 — Specialization (Weeks 7–9)
-- **Project 6:** AI CTF Writeups *(ongoing)*
 - **Adversarial ML beyond LLMs:** Evasion attacks, membership inference *(planned)*
 - **Deep technical writeup:** Topic TBD *(planned)*
 
