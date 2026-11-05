@@ -4,6 +4,24 @@ Detection content for abuse of customer-facing LLM applications, built and
 validated against a real labeled corpus (256 real-world jailbreak prompts,
 Garak `dan.DanInTheWild` vs `llama3.2:3b`).
 
+## Data flow
+
+```mermaid
+flowchart LR
+    subgraph live["Live path"]
+        K["Kali: PyRIT<br/>pyrit_rag_redteam.py"] -->|"POST /chat"| A["rag_app.py :5001"]
+        A -->|"JSON event per request"| L["logs/rag_app.log"]
+        L -->|"Splunk file monitor"| I1[("index=llm_app<br/>sourcetype=_json")]
+    end
+    subgraph eval["Evaluation path"]
+        DS["datasets/<br/>labeled, corrected"] --> I2[("index=llm_lab_corrected<br/>sourcetype=llm_refusal_dataset")]
+    end
+    I1 --> Q1["detect_absence_of_refusal_pyrit_replay.spl"]
+    I2 --> Q2["detect_absence_of_refusal.spl"]
+    Q1 --> PB["AI IR Playbook<br/>(Project 4)"]
+    Q2 --> PB
+```
+
 ## Contents
 
 | File | What it is |

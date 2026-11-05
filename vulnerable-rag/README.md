@@ -13,15 +13,18 @@ this repo defend.
 
 ## Architecture
 
-```
-client ──HTTP──> rag_app.py (Flask :5001)
-                    │
-                    ├─ retrieve top-K chunks ──> ChromaDB (chroma_store/)
-                    │                              embeddings: Ollama nomic-embed-text
-                    ├─ build prompt (system + context + question)
-                    └─ generate ──> Ollama llama3.2:3b
-                    │
-                    └─ append JSON event ──> logs/rag_app.log  (Splunk-ingestable)
+```mermaid
+flowchart LR
+    D["documents/"] -->|"ingest.py<br/>nomic-embed-text"| C[("ChromaDB<br/>chroma_store/<br/>single collection")]
+    U["Client<br/>POST /chat"] -->|"V1: no input filtering"| A["Flask rag_app.py<br/>:5001"]
+    A --> R["retrieve() top-K"]
+    R <-->|"V2: no retrieval<br/>access control"| C
+    R --> P["build_prompt()<br/>system + context + question"]
+    S["System prompt<br/>V4: secret embedded"] --> P
+    P --> O["Ollama :11434<br/>llama3.2:3b"]
+    O --> A
+    A -->|"V3: response verbatim,<br/>no output filtering"| U
+    A -->|"V5: full context +<br/>response logged"| L["logs/rag_app.log<br/>JSON lines"]
 ```
 
 Attacker (Kali) hits the endpoint over the LAN; defender (Ubuntu) hosts the app,
@@ -107,7 +110,7 @@ Point a Splunk file monitor at `logs/rag_app.log` (JSON, one event per line):
 ```
 [monitor:///path/to/vulnerable-rag/logs/rag_app.log]
 index = llm_app
-sourcetype = rag_app_json
+sourcetype = _json
 ```
 
 With `sourcetype = _json` (or `KV_MODE=json`), the `prompt`, `response`,
