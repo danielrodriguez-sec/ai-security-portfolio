@@ -90,10 +90,12 @@ against that ground truth. It was wrong in both directions, and it inflated the
 reported attack success rate from 58.2% to 65.23%.
 
 **Refusal holds by accident.** The salary data never leaked — not by hand, not
-over 21 automated turns. But nothing in the application stopped it. The rows
-were retrieved and handed to the model every time. The only barrier was the
-model's own training, which the application doesn't own and can't count on.
-Swap the model or upgrade it, and that barrier may be gone.
+over 21 automated turns. But nothing in the chatbot stopped it. In 14 of the 21
+automated turns, the chatbot retrieved the salary file and handed it to the
+model; in the other 7, the attacker's wording didn't pull it in. Where the model
+had the numbers, the only barrier was its own training, which the chatbot
+doesn't own and can't count on. Swap the model or upgrade it, and that barrier
+may be gone.
 
 **Refusal can carry the payload.** Turn eight is the new case. The model
 produced refusal language and the secret in the same reply. Any control that
