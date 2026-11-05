@@ -80,6 +80,16 @@ skimming raw evidence could mistake the fabricated key for a real IOC. Evidence
 is retained (`evidence/v4b-roleplay.json`) with this caveat attached rather than
 discarded.
 
+## Key result
+
+Of five deliberate vulnerabilities, the application itself stopped none. A canary
+credential that existed only in the system prompt (`AKIASYSPROMPTLEAK001`) leaked
+through prompt injection; the confidential salary roster was retrieved into model
+context with no authorization check; and all five salaries sat in cleartext in the
+app's own log, with zero model interaction needed. The only thing keeping salary
+data out of responses was the model's own refusal — a behavior the application
+does not own and cannot rely on across model versions.
+
 ## Lessons learned — remediation
 
 Defense in depth; no single layer holds:

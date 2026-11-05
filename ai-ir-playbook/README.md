@@ -57,6 +57,17 @@ impossible — a preparation-phase requirement every playbook calls out.
 | 4 | [Credential / API-key leakage via output](scenario-4-credential-leakage.md) | LLM02, LLM06 / AML.T0057, T0055 | Dual-clock: rotate before full analysis |
 | 5 | [Jailbreak-as-a-service abuse](scenario-5-jailbreak-as-a-service.md) | LLM01, LLM10 / AML.T0054, T0034 | Distributed, economic; campaign attribution |
 
+## Key result
+
+Five scenarios, one eight-phase structure, and every search tagged
+[LAB-RUNNABLE] or [PRODUCTION]. The finding that cuts across all five is a
+preparation requirement: attribution depends on the application logging a
+correlatable identity (`session_id`, `user_id`) that joins the content layer to
+network telemetry. Without it, Phase 3 attribution is impossible in every
+scenario. Detection signals inherit the detection pack's measured keyword-detector
+error rate (precision 0.725 / recall 0.812) rather than assuming detections are
+perfect.
+
 ## How this connects to the detection pack
 
 Each scenario's Phase 1 references concrete detections from
@@ -67,10 +78,10 @@ the same operational cycle.
 
 ## Method notes
 
-- Frameworks: OWASP LLM Top 10 (2025), MITRE ATLAS.
 - The lab dataset is the corrected DanInTheWild corpus
   (`../splunk-detection-pack/datasets/daninthewild_labeled.corrected.jsonl`),
   content layer only.
 - Detection performance is treated honestly throughout: keyword detection scores
   precision 0.725 / recall 0.812 against corrected ground truth, and playbooks
   reference that limitation rather than assuming detections are perfect.
+- Frameworks: OWASP LLM Top 10 (2025), MITRE ATLAS v5.6.0.
