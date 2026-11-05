@@ -10,8 +10,8 @@
 ### Scope note — lab vs production
 
 This playbook is written for a **production** LLM deployment. Searches are tagged:
-- **[LAB-RUNNABLE]** — runs against the lab data (`index=llm_lab_corrected`), which contains the content layer (prompt/response) only.
-- **[PRODUCTION]** — requires telemetry a real deployment has but the lab does not (network logs, session identity, vector store). Written as the query you would run, not runnable here.
+- **[LAB-RUNNABLE]** — runs against lab data: the vulnerable RAG app log (`index=llm_app`: prompt, retrieved_context, response, session_id, src_ip) or the labeled dataset (`index=llm_lab_corrected`: prompt/response only).
+- **[PRODUCTION]** — requires telemetry a real deployment has but the lab does not (gateway/network logs, authenticated user identity, vector-store state). Written as the query you would run, not runnable here.
 
 **Assumed production log schema.** Every request emits an application-layer event:
 `timestamp, session_id, user_id, prompt, retrieved_context (chunks + source doc IDs), response, model_version, tool_calls, tokens_in, tokens_out, latency_ms, system_prompt_version`.
@@ -26,8 +26,8 @@ The **join key is `session_id`** (and `user_id` when authenticated). If the app 
 The incident is expected to surface from one or more of:
 
 - **Absence-of-refusal on an adversarial prompt.** The deployed detection (`splunk-detection-pack/detect_absence_of_refusal.spl`) flags a response that does not lead with a refusal. **[LAB-RUNNABLE]**
-- **Sensitive data pattern in the response.** Output matches PII/secret regex (SSN, credential, key, internal hostname). **[PRODUCTION]** — in lab, approximated by scanning `output`.
-- **Anomalous retrieval.** A single request pulls from an unusually high number of documents, or from documents outside the user's entitlement. **[PRODUCTION]** — requires `retrieved_context`.
+- **Sensitive data pattern in the response.** Output matches PII/secret regex (SSN, credential, key, internal hostname). **[LAB-RUNNABLE]** against `index=llm_app`: a credential-pattern match on `response` (`AKIA[0-9A-Z]{16}`) returns the PyRIT system-prompt leak (1 hit, 1 session).
+- **Anomalous retrieval.** A single request pulls from an unusually high number of documents, or from documents outside the user's entitlement. **[PRODUCTION]** — the lab app logs `retrieved_context` but always retrieves a fixed top-K of 4 chunks (33 requests checked) and has no user entitlements, so neither breadth nor entitlement varies in the lab.
 - **Injection markers in the prompt.** Prompt contains override phrasing ("ignore previous instructions", "you are now", encoded payloads). **[LAB-RUNNABLE]** against `prompt`.
 - **Indirect delivery via ingested content.** Override phrasing arrives inside retrieved/summarized content rather than the user's own prompt (e.g. a document chunk or email body) — same markers, different origin. See `../email-prompt-injection/` for the concrete instance (AML.T0051.001). **[LAB-RUNNABLE]** against `retrieved_context` / ingested source.
 

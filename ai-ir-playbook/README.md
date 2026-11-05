@@ -8,10 +8,12 @@ back at those rules.
 
 ## Scope — production playbook, lab-validated where possible
 
-These playbooks are written for a **production** LLM deployment. The lab has no
-running LLM application and collects no network logs, so every search is tagged:
+These playbooks are written for a **production** LLM deployment. The lab runs
+the vulnerable RAG app (`index=llm_app`) but has no gateway, network, IAM, or
+vector-store telemetry, so every search is tagged:
 
-- **[LAB-RUNNABLE]** — runs against the lab dataset (`index=llm_lab_corrected`,
+- **[LAB-RUNNABLE]** — runs against lab data: the RAG app log (`index=llm_app`) or the labeled
+  dataset (`index=llm_lab_corrected`,
   the DanInTheWild content layer: prompt + response). These are demonstrated, not
   hypothetical.
 - **[PRODUCTION]** — requires telemetry a real deployment has (gateway/firewall

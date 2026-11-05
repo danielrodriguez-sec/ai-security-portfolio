@@ -65,7 +65,7 @@ Two questions: who *received* the leak, and was the credential *used*.
 
 1. **Who received the secret.** All sessions/users whose responses contained it — the leak may have been served to many. Pivot on the pattern across the population.
    ```
-   index=llm_app | where match(output, "<secret pattern>") | stats dc(session_id) values(user_id) by _time
+   index=llm_app | where match(response, "<secret pattern>") | stats dc(session_id) values(user_id) by _time
    ```
 2. **Requester context.** For each recipient: `src_ip`, geo/ASN, auth identity, history — as Scenario 1. Distinguish an attacker who extracted it deliberately from a user who received it incidentally.
 3. **Was the credential used?** The critical forensic question. Pull IAM/access logs for the leaked `api_key_id`/`secret_ref`: any authentication events, especially from new IPs/geos, after the exposure time.
