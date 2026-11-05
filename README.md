@@ -20,7 +20,7 @@ Most AI security content focuses on offense (prompt injection, jailbreaks, model
 - **Project 5:** Indirect Prompt Injection via Email — Attack & Detection *(done)*
 
 ### Phase 3 — Specialization (Weeks 7–9)
-- **Deep technical writeup:** Topic TBD *(planned)*
+- **Deep technical writeup:** [The Refusal That Leaked](writeups/the-refusal-that-leaked.md) *(done)*
 
 ## Frameworks Referenced
 
