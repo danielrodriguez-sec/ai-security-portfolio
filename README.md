@@ -48,10 +48,10 @@ The PyRIT finding in full: the model handed over a credential inside a refusal. 
 
 ## Lab and tools
 
-**Offensive:** Garak 0.15.0 · PyRIT 0.13.0 · Python
-**Defensive:** Splunk Enterprise 10.4.2 · Sigma
-**Models and RAG:** Ollama (`llama3.2:3b`, `mistral`) · ChromaDB · `nomic-embed-text`
-**Hosts:** Ubuntu bare metal (target app, models, Splunk) · Kali VM (attacker)
+- **Offensive:** Garak 0.15.0 · PyRIT 0.13.0 · Python
+- **Defensive:** Splunk Enterprise 10.4.2 · Sigma
+- **Models and RAG:** Ollama (`llama3.2:3b`, `mistral`) · ChromaDB · `nomic-embed-text`
+- **Hosts:** Ubuntu bare metal (target app, models, Splunk) · Kali VM (attacker)
 
 ## Background
 
