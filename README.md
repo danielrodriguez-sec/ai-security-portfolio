@@ -1,52 +1,63 @@
-# AI Security Portfolio
+# AI Security Portfolio — Daniel Rodriguez
 
-Hands-on projects in AI/LLM security — offensive testing, defensive detection, and incident response — built on 20+ years of DFIR experience across federal agencies and Fortune 500 enterprises.
+Attack, detect, and respond for LLM applications. I'm an incident responder with two decades in DFIR (CISA's Hunt and Incident Response Team, Pentagon CIRT, DoD Cyber Crime Center, State Department CIRT, Synchrony Financial, Biogen, E*Trade). This repo applies that work to AI systems: every attack here has a matching detection and a response path.
 
-## About This Portfolio
+> All work runs in an isolated home lab against local models. Findings are lab results, not production claims, and each project states what it does and does not prove.
 
-Most AI security content focuses on offense (prompt injection, jailbreaks, model extraction). This portfolio emphasizes the **defensive and IR side** — detection engineering, incident response playbooks, and threat hunting for AI/LLM systems — content largely missing from publicly available material.
+## How the projects fit together
+
+```mermaid
+flowchart LR
+    A["Attack<br/>RAG red team · PyRIT · email injection"] -->|"app logs"| D["Detect<br/>Splunk detection pack"]
+    D -->|"alert"| R["Respond<br/>AI IR playbook"]
+    R -->|"lessons learned, retest"| A
+    F["Frameworks cross-reference"] -.->|"OWASP / ATLAS IDs"| A
+    F -.-> D
+    F -.-> R
+```
+
+Every finding in the projects carries OWASP LLM Top 10 and MITRE ATLAS IDs, verified against the cross-reference.
 
 ## Projects
 
-*Projects will be added as completed. Each includes methodology, evidence, and reproducible code where applicable.*
+### 1. [AI Security Frameworks Cross-Reference](frameworks-cross-reference.md)
+Maps the OWASP Top 10 for LLM Applications (2025) to MITRE ATLAS v5.6.0 techniques and NIST AI RMF 1.0, with what an analyst would actually see when each one happens.
 
-### Phase 1 — Foundations (Weeks 1–3)
-- **Project 1:** AI Security Frameworks Cross-Reference *(done)*
-- **Project 2:** Red Team Assessment of a Vulnerable RAG Application *(done)* — plus [PyRIT automated red team](vulnerable-rag/pyrit/)
+### 2. [Red Team Assessment: Vulnerable RAG Application](vulnerable-rag/ASSESSMENT.md)
+A deliberately insecure Flask + ChromaDB + `llama3.2:3b` support assistant with five planted vulnerabilities, attacked and written up like a pentest report. A canary credential that existed only in the system prompt leaked through prompt injection. The full confidential salary roster sat in cleartext in the app's own log, no model interaction needed. Data exfiltration through the model was stopped only by the model's own refusal; the app had no output control.
 
-### Phase 2 — Defensive Track (Weeks 4–6)
-- **Project 3:** Splunk Detection Content Pack for LLM Application Abuse *(done)*
-- **Project 4:** AI Incident Response Playbook *(done)*
-- **Project 5:** Indirect Prompt Injection via Email — Attack & Detection *(done)*
+**Automated follow-up: [PyRIT red team](vulnerable-rag/pyrit/).** An unattended 7B local attacker pulled the system-prompt credential in 8 turns (about 5 minutes) and failed on salary data after 21 turns. The leak arrived wrapped in refusal language.
 
-### Phase 3 — Specialization (Weeks 7–9)
-- **Deep technical writeup:** [The Refusal That Leaked](writeups/the-refusal-that-leaked.md) *(done)*
+### 3. [Splunk Detection Content Pack](splunk-detection-pack/)
+Detections for LLM application abuse, validated against 256 real-world jailbreak prompts (Garak `dan.DanInTheWild` vs `llama3.2:3b`) with hand-audited ground truth. Garak's keyword refusal detector scored precision 0.725 / recall 0.812, wrong in both directions, and its reported attack success rate of 65.23% corrected to 58.2%. Includes a Sigma port with a coverage-gap analysis.
 
-## Frameworks Referenced
+### 4. [AI Incident Response Playbook](ai-ir-playbook/)
+Five operational scenarios: RAG data exfiltration, training-data poisoning, harmful output, credential leakage, and jailbreak-as-a-service. Each runs through an eight-phase IR structure from detection signals to lessons learned, with detection signals tied back to the Splunk pack and containment and evidence steps written for LLM systems.
 
-- **OWASP Top 10 for LLM Applications**
-- **MITRE ATLAS** (Adversarial Threat Landscape for AI Systems)
-- **NIST AI Risk Management Framework (AI RMF)**
-- **Google Secure AI Framework (SAIF)**
+### 5. [Indirect Prompt Injection via Email](email-prompt-injection/)
+An email-summarization agent hijacked by instructions hidden with ordinary CSS (white-on-white, `display:none`), invisible to the human reader. The agent obeyed them despite a system prompt forbidding it, and its own log shows it ingested the concealed text verbatim. Ships Splunk detections for hidden instructions and task divergence.
 
-## Tools & Stack
+### Deep dive: [The Refusal That Leaked](writeups/the-refusal-that-leaked.md)
+The PyRIT finding in full: the model handed over a credential inside a refusal. A refusal-based detection caught it at 1-in-10 precision; a credential-pattern match on the output caught it with no false positives in this sample.
 
-**Offensive:** Garak · PyRIT · Promptfoo · custom Python scripts
-**Defensive:** Splunk · Sigma · custom detection content
-**Model hosting:** Ollama · Hugging Face · ChromaDB (RAG)
-**Environment:** Kali Linux (VirtualBox VM) · Ubuntu (bare metal)
+## Frameworks
+
+- OWASP Top 10 for LLM Applications (2025)
+- MITRE ATLAS v5.6.0
+- NIST AI RMF 1.0
+
+## Lab and tools
+
+**Offensive:** Garak 0.15.0 · PyRIT 0.13.0 · Python
+**Defensive:** Splunk Enterprise 10.4.2 · Sigma
+**Models and RAG:** Ollama (`llama3.2:3b`, `mistral`) · ChromaDB · `nomic-embed-text`
+**Hosts:** Ubuntu bare metal (target app, models, Splunk) · Kali VM (attacker)
 
 ## Background
 
-I bring two decades of incident response and digital forensics into the AI security space. Federal-tier work includes CISA's Hunt and Incident Response Team, Pentagon CIRT, DoD Cyber Crime Center, and US Department of State CIRT. Corporate work includes Synchrony Financial, Biogen, and E*Trade Financial.
-
-The IR and playbook authoring experience this portfolio draws on is genuinely underrepresented in publicly available AI security content. AI systems are being deployed faster than they're being secured, and almost no one publishing in this space has run an actual incident from detection through containment to lessons-learned.
+I've led SOC teams, written the playbooks and SOPs those teams ran, and worked incidents from first alert through lessons learned, across federal agencies and Fortune 500 companies. That's the lens here. AI systems are a new attack surface, but they still need detection, triage, containment, and evidence that holds up. CISSP.
 
 ## Contact
 
-- 💼 [LinkedIn](https://linkedin.com/in/danielrodriguezcisspence)
-- 📫 drod1473@gmail.com
-
----
-
-*Portfolio updated through 2026. Repository structure and project list will evolve as work is published.*
+- [LinkedIn](https://linkedin.com/in/danielrodriguezcisspence)
+- drod1473@gmail.com
